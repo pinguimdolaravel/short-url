@@ -18,11 +18,11 @@
 }
 ```
 
-    - [ ] Receber quantas vezes a url foi usada
+    - [X] Receber quantas vezes a url foi usada
 
 ```json
 {
-    "daily_stat": [
+    "visits": [
         {
             "day": "2022-02-16",
             "qty": 20
