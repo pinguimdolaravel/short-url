@@ -10,11 +10,11 @@
     - [X] url precisa existir
     - [X] receber um 204[no content] caso deletado com sucesso
 - [ ] Pegar estatistica de uso da url /stats/YH21
-    - [ ] ultima vez que foi utilizada
+    - [X] ultima vez que foi utilizada
 
 ```json
 {
-    "last_access": "2022-02-17T13:45:00"
+    "last_visit": "2022-02-17T13:45:00"
 }
 ```
 
