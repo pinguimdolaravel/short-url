@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', fn() => 'Hello World');
+
 Route::get('{shortUrl:code}', function (\App\Models\ShortUrl $shortUrl) {
     $shortUrl->visits()->create([
         'ip_address' => request()->ip(),
