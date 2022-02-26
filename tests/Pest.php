@@ -1,5 +1,15 @@
 <?php
 
+use App\Models\ShortUrl;
+use App\Models\Visit;
+use Database\Factories\ShortUrlFactory;
+use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
+use Symfony\Component\HttpFoundation\Response;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -24,11 +34,17 @@ uses(Tests\TestCase::class)->in('Feature');
 |
 */
 
-
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
+expect()->extend('toBeCreated', function () {
+    return $this->ToBe(Response::HTTP_CREATED);
 });
 
+expect()->extend('toBeNoContent', function () {
+    return $this->ToBe(Response::HTTP_NO_CONTENT);
+});
+
+expect()->extend('toBeUnprocessableEntity', function () {
+    return $this->ToBe(Response::HTTP_UNPROCESSABLE_ENTITY);
+});
 /*
 |--------------------------------------------------------------------------
 | Functions
@@ -40,7 +56,73 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * ShortUrl Factory
+ *
+ */
+function shortUrl(): ShortUrlFactory
 {
-    // ..
+    return ShortUrlFactory::new();
+}
+
+/**
+ * Create (store) a shortUrl
+ *
+ * @param array<string,mixed> $data
+ * @return \Illuminate\Testing\TestResponse
+ */
+function storeShortUrl(array $data = [])
+{
+    return postJson(route('api.short-url.store'), $data);
+}
+
+/**
+ * Access a ShortURL Stats
+ *
+ * @param string $code
+ * @return \Illuminate\Testing\TestResponse
+ */
+function getStats(string $code)
+{
+    return getJson(route('api.short-url.stats.visits', $code));
+}
+
+/**
+ * Access a ShortURL Stats
+ *
+ * @param string $code
+ * @return \Illuminate\Testing\TestResponse
+ */
+function getLastVisit(string $code)
+{
+    return getJson(route('api.short-url.stats.last-visit', $code));
+}
+
+/**
+ * Generates Visits with VisitFactory
+ *
+ * @param ShortUrl $shortUrl
+ */
+function createVisits(ShortUrl $shortUrl): void
+{
+    Visit::factory()
+        ->count(12)
+        ->state(new Sequence(
+            ['created_at' => Carbon::now()->subDays(3)],
+            ['created_at' => Carbon::now()->subDays(2)],
+            ['created_at' => Carbon::now()->subDay()],
+            ['created_at' => Carbon::now()]
+        ))
+        ->create([
+            'short_url_id' => $shortUrl->id,
+        ]);
+}
+
+function requiresMysql()
+{
+    if (DB::getDriverName() !== 'mysql') {
+        test()->markTestSkipped('This test requires MySQL database');
+    }
+
+    return test();
 }

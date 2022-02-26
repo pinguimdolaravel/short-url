@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\ShortUrl;
 
-use App\Facades\Actions\CodeGenerator;
+use App\Facades\Actions\UrlCode;
 use App\Models\ShortUrl;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ class CreateTest extends TestCase
     {
         $randomCode = Str::random(5);
 
-        CodeGenerator::shouldReceive('run')
+        UrlCode::shouldReceive('generate')
             ->once()
             ->andReturn($randomCode);
 
