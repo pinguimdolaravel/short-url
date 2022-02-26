@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\ShortUrl;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\deleteJson;
 
 it('can delete a short url', function () {
-    $shortUrl = ShortUrl::factory()->create();
+    $shortUrl = shortUrl()->create();
 
     $response = deleteJson(route('api.short-url.destroy', $shortUrl->code));
 
