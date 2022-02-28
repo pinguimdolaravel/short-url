@@ -95,7 +95,7 @@ it('should return a unique code - v1', function () {
 });
 
 
-it('should return a non existing code - v2', function () {
+it('should return a unique code - v2', function () {
     //tentando fazer um teste que tenha possibilidades reais de dar erro se o codegenerator não estiver funcionando como esperado
 
     //defino um range para todas as letras
