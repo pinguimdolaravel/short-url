@@ -196,4 +196,6 @@ return [
         // ...
     ])->toArray(),
 
+    'short_url_code_length' => env('SHORT_URL_CODE_LENGTH', 5)
+
 ];
