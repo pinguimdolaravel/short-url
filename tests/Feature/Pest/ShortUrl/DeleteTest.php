@@ -1,15 +1,22 @@
 <?php
 
 use App\Models\ShortUrl;
-use Symfony\Component\HttpFoundation\Response;
+use function Pest\Laravel\deleteJson;
 
-it('should be able to delete a short url', function () {
-    $shortUrl = ShortUrl::factory()->create();
-    $this->deleteJson(route('api.short-url.destroy', $shortUrl->code))
-        ->assertStatus(Response::HTTP_NO_CONTENT);
+it('can delete a short url', function () {
+    $shortUrl = shortUrl()->create();
 
-    $this->assertDatabaseMissing('short_urls', [
-        'id' => $shortUrl->id,
-    ]);
+    $response = deleteJson(route('api.short-url.destroy', $shortUrl->code));
+
+    expect($response)
+        ->status()
+        ->toBeNoContent();
 });
 
+it('can delete a short url [HIGH ORDER]')
+    ->tap(fn ()    => $this->code = shortUrl()->create()->code)
+    ->tap(fn ()    => $this->response = deleteJson(route('api.short-url.destroy', $this->code)))
+    ->expect(fn () => $this->response)
+    ->status()->toBeNoContent()
+    ->expect(fn () => $this->count = ShortUrl::count())
+    ->toBe(0);

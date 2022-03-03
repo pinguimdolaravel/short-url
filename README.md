@@ -1,12 +1,18 @@
 # API TDD
 
+## Sobre
 
-## Desafio
+Projeto para fins educacionais e de aprendizado. Desenvolvido em formato Live no canal 🐧 **Pinguim do Laravel**.
+
+📺 Acompanhe: [\#16 - Laravel | TDD](https://www.youtube.com/watch?v=-WUq9QilQVU)
+
+## TO DO
+
+### Desafio
 
 - [ ] Garantir que o código da url curta não se repita
 
 ----
-
 
 - [X] Salvar um endpoint
     - [X] Precisar enviar o endpoint que queremos encurtar
@@ -43,8 +49,3 @@
     "total": 40
 }
 ```
-
-    
-
-
-

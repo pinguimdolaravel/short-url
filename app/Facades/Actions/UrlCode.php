@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static string run()
  */
-class CodeGenerator extends Facade
+class UrlCode extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \App\Actions\CodeGenerator::class;
+        return \App\Actions\UrlCode::class;
     }
 }

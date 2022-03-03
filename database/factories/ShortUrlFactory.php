@@ -14,7 +14,7 @@ class ShortUrlFactory extends Factory
         return [
             'url'       => $this->faker->url(),
             'short_url' => $this->faker->url(),
-            'code'      => $this->faker->word(),
+            'code'      => $this->faker->word(5),
         ];
     }
 }

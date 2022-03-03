@@ -1,49 +1,41 @@
 <?php
 
-use App\Models\ShortUrl;
-use App\Models\Visit;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Carbon;
+use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
-use function Pest\Laravel\getJson;
+use Symfony\Component\HttpFoundation\Response;
 
 it('should return the last visit on the short url', function () {
-    $shortUrl = ShortUrl::factory()->createOne();
+    $shortUrl = shortUrl()->create();
 
     get($shortUrl->code);
 
-    getJson(route('api.short-url.stats.last-visit', $shortUrl->code))
-        ->assertSuccessful()
-        ->assertJson([
-            'last_visit' => $shortUrl->last_visit?->toIso8601String(),
-        ]);
+    $response = getLastVisit($shortUrl->code);
 
-    $this->assertDatabaseHas('visits', [
+    expect($response)
+        ->status()->toBe(Response::HTTP_OK)
+        ->content()
+        ->json()
+        ->toMatchArray(['last_visit' => $shortUrl->last_visit?->toIso8601String()]);
+
+    assertDatabaseHas('visits', [
         'short_url_id' => $shortUrl->id,
         'created_at'   => Carbon::now(),
     ]);
-});
-
+})->requiresMysql();
 
 it('should return the amount per day of visits with a total', function () {
+    $shortUrl = shortUrl()->create();
 
-    $shortUrl = ShortUrl::factory()->createOne();
+    createVisits($shortUrl);
 
-    Visit::factory()
-        ->count(12)
-        ->state(new Sequence(
-            ['created_at' => Carbon::now()->subDays(3)],
-            ['created_at' => Carbon::now()->subDays(2)],
-            ['created_at' => Carbon::now()->subDay()],
-            ['created_at' => Carbon::now()]
-        ))
-        ->create([
-            'short_url_id' => $shortUrl->id,
-        ]);
+    $response = getStats($shortUrl->code);
 
-    getJson(route('api.short-url.stats.visits', $shortUrl->code))
-        ->assertSuccessful()
-        ->assertJson([
+    expect($response)
+        ->status()->toBe(Response::HTTP_OK)
+        ->content()
+        ->json()
+        ->toMatchArray([
             'total'  => 12,
             'visits' => [
                 [
@@ -64,4 +56,4 @@ it('should return the amount per day of visits with a total', function () {
                 ],
             ],
         ]);
-});
+})->requiresMysql();

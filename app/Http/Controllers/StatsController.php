@@ -15,6 +15,7 @@ class StatsController extends Controller
 
     public function visits(ShortUrl $shortUrl)
     {
+        // Does not work in SQLite
 
         $visits = $shortUrl->visits()
             ->selectRaw("
@@ -25,7 +26,6 @@ class StatsController extends Controller
             ->get();
 
         ray($visits->toArray());
-
 
         return [
             'total'  => $shortUrl->visits()->count(),
